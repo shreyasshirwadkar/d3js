@@ -31,6 +31,9 @@ const Dashboard: React.FC = () => {
     "UK",
   ]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [darkMode, setDarkMode] = useState<boolean>(() => {
+    return localStorage.getItem("theme") === "dark";
+  });
 
   useEffect(() => {
     const fetchCovidData = async () => {
@@ -56,6 +59,14 @@ const Dashboard: React.FC = () => {
     fetchCovidData();
   }, [selectedCountries]);
 
+  const toggleTheme = () => {
+    setDarkMode((prevMode) => {
+      const newMode = !prevMode;
+      localStorage.setItem("theme", newMode ? "dark" : "light");
+      return newMode;
+    });
+  };
+
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
   };
@@ -69,9 +80,25 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className="p-6 max-w-full">
+    <div
+      className={`${
+        darkMode ? "bg-gray-900 text-white" : "bg-white text-black"
+      } min-h-screen p-6 max-w-full`}
+    >
+      <button
+        onClick={toggleTheme}
+        className={`${
+          darkMode ? "bg-slate-400 text-black" : " bg-black text-white"
+        } p-2 mb-2 rounded-lg`}
+      >
+        {darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+      </button>
       <div className="mb-4 relative w-full md:w-[20vw]">
-        <label className="block text-lg font-semibold text-white ">
+        <label
+          className={`${
+            darkMode ? "text-white " : "text-black"
+          }  block text-lg font-semibold  `}
+        >
           Select Countries:
         </label>
         <button

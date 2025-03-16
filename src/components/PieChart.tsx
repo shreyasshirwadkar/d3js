@@ -76,7 +76,7 @@ const PieChart: React.FC<PieChartProps> = ({ covidData }) => {
   }, [covidData]);
 
   return (
-    <div className="flex flex-col items-center text-white bg-gray-900 p-6 rounded-lg shadow-lg ">
+    <div className="flex flex-col items-center text-white border border-gray-400 bg-gray-900 p-6 rounded-lg shadow-lg ">
       <h2 className="text-xl text-white text-center  mb-4">
         COVID-19 Cases (Pie Chart)
       </h2>
