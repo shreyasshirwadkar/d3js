@@ -1,7 +1,5 @@
 # COVID-19 Dashboard
 
-file:///home/leo/Desktop/portfolio-images/d3js.png
-
 
 This project is a COVID-19 Dashboard built using **React, TypeScript, D3.js, and Tailwind CSS**. The dashboard visualizes COVID-19 case data using **bar charts and pie charts**, allowing users to select multiple countries and view their respective case counts.
 
