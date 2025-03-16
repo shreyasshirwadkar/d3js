@@ -40,7 +40,7 @@ const PieChart: React.FC<PieChartProps> = ({ covidData }) => {
       .enter()
       .append("path")
       .attr("d", arcGenerator)
-      .attr("fill", (d, i) => colorScale(i.toString()))
+      .attr("fill", (_, i) => colorScale(i.toString()))
       .attr("stroke", "black")
       .attr("stroke-width", "2px")
       .attr("opacity", 0.7)

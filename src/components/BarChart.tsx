@@ -39,8 +39,8 @@ const BarChart: React.FC<BarChartProps> = ({ covidData }) => {
 
     const g = svg.append("g").attr("class", "chart-content");
 
-    const xAxis = g
-      .append("g")
+    const xAxis = g.append("g");
+    xAxis
       .attr("transform", `translate(0,${height - margin.bottom})`)
       .call(d3.axisBottom(xScale))
       .selectAll("text")
@@ -48,13 +48,13 @@ const BarChart: React.FC<BarChartProps> = ({ covidData }) => {
       .style("text-anchor", "start")
       .attr("fill", "white");
 
-    const yAxis = g
-      .append("g")
+    const yAxis = g.append("g");
+    yAxis
       .attr("transform", `translate(${margin.left},0)`)
       .call(d3.axisLeft(yScale));
 
-    const bars = g
-      .selectAll("rect")
+    const bars = g.selectAll("rect");
+    bars
       .data(covidData)
       .enter()
       .append("rect")
