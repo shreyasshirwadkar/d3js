@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import * as d3 from "d3";
 
 interface CovidData {
@@ -6,36 +6,14 @@ interface CovidData {
   cases: number;
 }
 
-const BarChart: React.FC = () => {
+interface BarChartProps {
+  covidData: CovidData[];
+}
+
+const BarChart: React.FC<BarChartProps> = ({ covidData }) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
-  const [covidData, setCovidData] = useState<CovidData[]>([]);
 
-  useEffect(() => {
-    const fetchCovidData = async () => {
-      try {
-        const response = await fetch(
-          "https://disease.sh/v3/covid-19/countries"
-        );
-        const data = await response.json();
-
-        // Select a few countries for display
-        const selectedCountries = ["USA", "India", "Brazil", "Russia", "UK"];
-        const filteredData = data
-          .filter((d: any) => selectedCountries.includes(d.country))
-          .map((d: any) => ({
-            country: d.country,
-            cases: d.cases,
-          }));
-
-        setCovidData(filteredData);
-      } catch (error) {
-        console.error("Error fetching COVID-19 data:", error);
-      }
-    };
-
-    fetchCovidData();
-  }, []);
   useEffect(() => {
     if (!svgRef.current || !tooltipRef.current) return;
 
