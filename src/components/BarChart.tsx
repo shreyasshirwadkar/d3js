@@ -1,143 +1,138 @@
 import { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 
-const BarChart = () => {
-  const myElementRef = useRef(null);
+interface CovidData {
+  country: string;
+  cases: number;
+}
 
-  const [barData, setBarData] = useState([
-    {
-      name: "John Doe",
-      age: 24,
-    },
-    {
-      name: "Will Smith",
-      age: 50,
-    },
-    {
-      name: "Jane Doe",
-      age: 15,
-    },
-    {
-      name: "Alice Doe",
-      age: 90,
-    },
-  ]);
-
-  const maxAge = Number(d3.max(barData, (d) => d.age));
-
-  const totalHeight = maxAge + 50;
-  const rectWidth = 50;
-
-  const margin = {
-    top: 20,
-    right: 90,
-    bottom: 100,
-    left: 40,
-  };
-
-  const yAxisLabelSpacing = 20;
+const BarChart: React.FC = () => {
+  const svgRef = useRef<SVGSVGElement | null>(null);
+  const tooltipRef = useRef<HTMLDivElement | null>(null);
+  const [covidData, setCovidData] = useState<CovidData[]>([]);
 
   useEffect(() => {
-    const svg = d3.select(myElementRef.current);
+    const fetchCovidData = async () => {
+      try {
+        const response = await fetch(
+          "https://disease.sh/v3/covid-19/countries"
+        );
+        const data = await response.json();
 
-    const allRectData = svg
+        // Select a few countries for display
+        const selectedCountries = ["USA", "India", "Brazil", "Russia", "UK"];
+        const filteredData = data
+          .filter((d: any) => selectedCountries.includes(d.country))
+          .map((d: any) => ({
+            country: d.country,
+            cases: d.cases,
+          }));
+
+        setCovidData(filteredData);
+      } catch (error) {
+        console.error("Error fetching COVID-19 data:", error);
+      }
+    };
+
+    fetchCovidData();
+  }, []);
+  useEffect(() => {
+    if (!svgRef.current || !tooltipRef.current) return;
+
+    const svg = d3.select(svgRef.current);
+    const tooltip = d3.select(tooltipRef.current);
+    svg.selectAll("*").remove();
+
+    const width = 500;
+    const height = 400;
+    const margin = { top: 40, right: 30, bottom: 100, left: 60 };
+
+    const xScale = d3
+      .scaleBand()
+      .domain(covidData.map((d) => d.country))
+      .range([margin.left, width - margin.right])
+      .padding(0.4);
+
+    const yScale = d3
+      .scaleLinear()
+      .domain([0, d3.max(covidData, (d) => d.cases) || 100000])
+      .nice()
+      .range([height - margin.bottom, margin.top]);
+
+    const g = svg.append("g").attr("class", "chart-content");
+
+    const xAxis = g
+      .append("g")
+      .attr("transform", `translate(0,${height - margin.bottom})`)
+      .call(d3.axisBottom(xScale))
+      .selectAll("text")
+      .attr("transform", "rotate(45)")
+      .style("text-anchor", "start")
+      .attr("fill", "white");
+
+    const yAxis = g
+      .append("g")
+      .attr("transform", `translate(${margin.left},0)`)
+      .call(d3.axisLeft(yScale));
+
+    const bars = g
       .selectAll("rect")
-      .data(barData)
+      .data(covidData)
       .enter()
       .append("rect")
-      // calculate x-position based on its index
-      .attr("x", (d, i) => i * rectWidth + margin.left)
-      // calculate y-position based on its index
-      .attr("y", (d, i) => totalHeight - d.age + margin.top)
-      // set height based on the bound datum
-      .attr("height", (d) => d.age)
-      .attr("width", rectWidth)
+      .attr("x", (d) => xScale(d.country) ?? 0)
+      .attr("y", (d) => yScale(d.cases) ?? 0)
+      .attr("width", xScale.bandwidth())
+      .attr("height", (d) => height - margin.bottom - (yScale(d.cases) ?? 0))
+      .attr("fill", "#16C79A")
+      .attr("stroke", "#19456B")
       .attr("stroke-width", 2)
-      .attr("stroke", "#38bcb2")
-      .attr("fill", "#97e3d5");
+      .on("mouseover", function (event: MouseEvent, d: CovidData) {
+        tooltip
+          .style("opacity", 1)
+          .html(
+            `<strong>${d.country}</strong>: ${d.cases.toLocaleString()} cases`
+          )
+          .style("left", `${event.pageX + 10}px`)
+          .style("top", `${event.pageY - 20}px`);
+      })
+      .on("mousemove", function (event: MouseEvent) {
+        tooltip
+          .style("left", `${event.pageX + 10}px`)
+          .style("top", `${event.pageY - 20}px`);
+      })
+      .on("mouseout", function () {
+        tooltip.style("opacity", 0);
+      });
 
-    //draw x-axis line
-    svg
-      .append("line")
-      .attr("x1", margin.left)
-      .attr("y1", margin.top + totalHeight)
-      .attr("x2", margin.left + rectWidth * barData.length + rectWidth / 2)
-      .attr("y2", margin.top + totalHeight)
-      .attr("stroke", "black")
-      .attr("stroke-width", 2);
+    const zoom = d3
+      .zoom<SVGSVGElement, unknown>()
+      .scaleExtent([1, 3]) // Min and max zoom levels
+      .translateExtent([
+        [0, 0],
+        [width, height],
+      ])
+      .on("zoom", (event) => {
+        g.attr("transform", event.transform);
+      });
 
-    //draw y-axis line
-    svg
-      .append("line")
-      .attr("x1", margin.left)
-      .attr("y1", margin.top)
-      .attr("x2", margin.left)
-      .attr("y2", margin.top + totalHeight)
-      .attr("stroke", "black")
-      .attr("stroke-width", 2);
-
-    //x-axis labels (name)
-    svg
-      .selectAll(".name-label")
-      .data(barData)
-      .enter()
-      .append("text")
-      .text((d) => d.name)
-      .attr("class", "name-label")
-      .attr("x", (d, i) => i * rectWidth + margin.left + 10)
-      .attr("y", totalHeight + margin.top)
-      .attr(
-        "transform",
-        (d, i) =>
-          `rotate(45 ${i * rectWidth + margin.left} ${
-            totalHeight + margin.top + 20
-          })`
-      )
-      .attr("fill", "gray");
-
-    //y-axis labels (age)
-    svg
-      .selectAll(".age-label")
-      .data(barData)
-      .enter()
-      .append("text")
-      .text((d) => d.age)
-      .attr("class", "age-label")
-      .attr("x", (d, i) => i * rectWidth + margin.left + rectWidth / 2)
-      .attr("y", (d) => margin.top + totalHeight - d.age - 5)
-      .attr("fill", "#1F77B4")
-      .attr("text-anchor", "middle")
-      .attr("font-weight", "bold");
-
-    // y-axis labels - 20 value apart
-    const yAxisLabelData = d3.range(
-      0,
-      maxAge + yAxisLabelSpacing * 2,
-      yAxisLabelSpacing
-    );
-
-    const yAxisLabels = svg
-      .selectAll(".y-axis-label")
-      .data(yAxisLabelData)
-      .enter()
-      .append("text")
-      .text((d) => d)
-      .attr("x", margin.left - 5)
-      .attr("y", (d) => margin.top + totalHeight - d)
-      .attr("fill", "gray")
-      .attr("text-anchor", "end")
-      .attr("alignment-baseline", "middle");
-
-    // console.log({allRectData})
-  }, [barData]);
+    svg.call(zoom);
+  }, [covidData]);
 
   return (
-    <div>
+    <div className="flex flex-col items-center text-white bg-gray-900 p-6 rounded-lg shadow-lg relative">
+      <h2 className="text-xl text-white">COVID-19 Cases by Country</h2>
+      <h3 className="mb-4">Scroll to zoom</h3>
       <svg
-        ref={myElementRef}
-        height={totalHeight + margin.top + margin.bottom}
-        style={{ border: "1px dashed" }}
+        ref={svgRef}
+        width={500}
+        height={400}
+        className="bg-gray-800 rounded-lg"
       ></svg>
+      <div
+        ref={tooltipRef}
+        className="absolute bg-white text-black text-xs px-2 py-1 rounded shadow-lg opacity-0 transition-opacity duration-200"
+      ></div>
     </div>
   );
 };

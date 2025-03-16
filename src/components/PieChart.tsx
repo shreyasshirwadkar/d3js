@@ -68,7 +68,7 @@ const PieChart = () => {
         ref={myElementRef}
         width={totalWidth}
         height={totalWidth}
-        style={{ border: "1px dashed" }}
+        style={{ border: "2px solid" }}
       ></svg>
     </div>
   );

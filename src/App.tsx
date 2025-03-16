@@ -1,19 +1,9 @@
-import BarChart from "./components/BarChart";
-import PieChart from "./components/PieChart";
+import Dashboard from "./components/Dashboard";
 
 const App = () => {
   return (
-    <div className="p-4 h-[100vh]  bg-black text-white">
-      <div className="flex gap-4 p-2">
-        <div>
-          <h1>D3 Bar Chart</h1>
-          <BarChart />
-        </div>
-        <div>
-          <h1>D3 Pie Chart</h1>
-          <PieChart />
-        </div>
-      </div>
+    <div className="p-4 h-[100vh]  bg-black">
+      <Dashboard />
     </div>
   );
 };
