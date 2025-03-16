@@ -98,14 +98,14 @@ const BarChart: React.FC<BarChartProps> = ({ covidData }) => {
   }, [covidData]);
 
   return (
-    <div className="flex flex-col items-center text-white bg-gray-900 p-6 rounded-lg shadow-lg relative">
+    <div className="flex flex-col items-center  text-white bg-gray-900 p-6 rounded-lg shadow-lg relative">
       <h2 className="text-xl text-white">COVID-19 Cases by Country</h2>
       <h3 className="mb-4">Scroll to zoom</h3>
       <svg
         ref={svgRef}
         width={500}
         height={400}
-        className="bg-gray-800 rounded-lg"
+        className="bg-gray-800 rounded-lg max-w-full"
       ></svg>
       <div
         ref={tooltipRef}

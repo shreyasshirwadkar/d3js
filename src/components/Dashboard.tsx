@@ -69,8 +69,8 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className="p-6">
-      <div className="mb-4 relative w-[20vw]">
+    <div className="p-6 max-w-full">
+      <div className="mb-4 relative w-full md:w-[20vw]">
         <label className="block text-lg font-semibold text-white ">
           Select Countries:
         </label>
