@@ -1,54 +1,84 @@
-# React + TypeScript + Vite
+# COVID-19 Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is a COVID-19 Dashboard built using **React, TypeScript, D3.js, and Tailwind CSS**. The dashboard visualizes COVID-19 case data using **bar charts and pie charts**, allowing users to select multiple countries and view their respective case counts.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Dynamic Data Fetching**: Fetches live COVID-19 data from `https://disease.sh/v3/covid-19/countries`.
+- **Interactive Charts**: Displays COVID-19 cases using **BarChart** and **PieChart** components built with **D3.js**.
+- **Country Selection Dropdown**: Users can select or deselect countries from a predefined list.
+- **Zoom and Tooltip Support**: The bar chart supports zooming, and both charts display tooltips with relevant details.
 
-## Expanding the ESLint configuration
+## Technologies Used
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **React** (Functional Components, Hooks)
+- **TypeScript** (For type safety)
+- **D3.js** (For data visualization)
+- **Tailwind CSS** (For styling)
+- **Heroicons** (For UI elements like dropdown icons)
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## Installation and Setup
+
+### Prerequisites
+
+- Node.js & npm/yarn installed
+- Basic knowledge of React & TypeScript
+
+### Steps
+
+1. **Clone the Repository**
+   ```sh
+   git clone https://github.com/your-repo/covid-dashboard.git
+   cd covid-dashboard
+   ```
+2. **Install Dependencies**
+   ```sh
+   npm install
+   # or
+   yarn install
+   ```
+3. **Start the Development Server**
+   ```sh
+   npm start
+   # or
+   yarn start
+   ```
+4. Open `http://localhost:3000` in your browser.
+
+## Project Structure
+
+```
+.
+├── src
+│   ├── components
+│   │   ├── BarChart.tsx
+│   │   ├── PieChart.tsx
+│   ├── Dashboard.tsx
+│   ├── App.tsx
+│   ├── index.tsx
+│   ├── styles.css
+├── public
+├── package.json
+└── README.md
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Usage
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+1. Select countries from the dropdown.
+2. View case distribution in bar and pie charts.
+3. Hover over bars and pie slices to see exact case numbers.
+4. Zoom in on the bar chart using the scroll wheel.
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+## Contribution
+
+If you'd like to contribute:
+
+1. Fork the repository
+2. Create a new branch (`git checkout -b feature-branch`)
+3. Commit changes (`git commit -m 'Added new feature'`)
+4. Push to the branch (`git push origin feature-branch`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the **MIT License**.
